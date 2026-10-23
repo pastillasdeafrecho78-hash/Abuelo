@@ -30,18 +30,9 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
     html = html.replace('href="/cart"', 'href="https://elabuelopreferido.com/cart"')
     html = html.replace('action="/localization"', 'action="https://elabuelopreferido.com/localization"')
     html = html.replace('class="lang-select" name="language_code" onchange="this.form.submit()"', 'class="lang-select" name="language_code"')
-    for code, native, readable in (
-        ('en', 'ENGLISH', 'INGLÉS'),
-        ('pt-BR', 'PORTUGUÊS (BRASIL)', 'PORTUGUÉS'),
-        ('fr', 'FRANÇAIS', 'FRANCÉS'),
-        ('it', 'ITALIANO', 'ITALIANO'),
-        ('de', 'DEUTSCH', 'ALEMÁN'),
-        ('nl', 'NEDERLANDS', 'NEERLANDÉS'),
-        ('ja', '日本語', 'JAPONÉS'),
-        ('zh-CN', '简体中文', 'CHINO'),
-        ('ko', '한국어', 'COREANO'),
-    ):
-        html = html.replace(f'<option value="{code}" lang="{code}">{native}</option>', f'<option value="{code}" lang="es">{readable}</option>')
+    # The last two native labels render as question marks without CJK fonts.
+    html = html.replace('<option value="zh-CN" lang="zh-CN">简体中文</option>', '<option value="zh-CN" lang="en">CHINESE</option>')
+    html = html.replace('<option value="ko" lang="ko">한국어</option>', '<option value="ko" lang="en">KOREAN</option>')
     def local_page_link(match):
         if '.' in match.group(2):
             return f'href="https://elabuelopreferido.com/{match.group(1)}/{match.group(2)}{match.group(3) or ""}"'
