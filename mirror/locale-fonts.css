@@ -14,4 +14,8 @@ html[lang^="ko"] .hero .lead{font-family:'Noto Sans KR Local',sans-serif!importa
 html[lang^="ja"] #MainContent :is(h1,h2,h3,.lead,.eyebrow,.statement),html[lang^="ja"] .ab-pop,html[lang^="ja"] .ab-pop *{font-family:'Noto Sans JP Local',sans-serif!important}
 html[lang^="zh"] #MainContent :is(h1,h2,h3,.lead,.eyebrow,.statement),html[lang^="zh"] .ab-pop,html[lang^="zh"] .ab-pop *{font-family:'Noto Sans SC Local',sans-serif!important}
 html[lang^="ko"] #MainContent :is(h1,h2,h3,.lead,.eyebrow,.statement),html[lang^="ko"] .ab-pop,html[lang^="ko"] .ab-pop *{font-family:'Noto Sans KR Local',sans-serif!important}
+html[lang^="ja"] #MainContent *,html[lang^="ja"] .hat-quick-view *,html[lang^="ja"] .hat-drawer *{font-family:'Noto Sans JP Local',sans-serif!important}
+html[lang^="zh"] #MainContent *,html[lang^="zh"] .hat-quick-view *,html[lang^="zh"] .hat-drawer *{font-family:'Noto Sans SC Local',sans-serif!important}
+html[lang^="ko"] #MainContent *,html[lang^="ko"] .hat-quick-view *,html[lang^="ko"] .hat-drawer *{font-family:'Noto Sans KR Local',sans-serif!important}
 html[lang^="ja"] #gorras .hat-pair-name,html[lang^="ja"] #gorras .hat-pair-name *,html[lang^="zh"] #gorras .hat-pair-name,html[lang^="zh"] #gorras .hat-pair-name *,html[lang^="ko"] #gorras .hat-pair-name,html[lang^="ko"] #gorras .hat-pair-name *{font-family:'Lobster Two Local',Georgia,serif!important}
+html[lang^="ja"] #gorras .hat-pair-price,html[lang^="zh"] #gorras .hat-pair-price,html[lang^="ko"] #gorras .hat-pair-price{font-family:'Barlow Condensed',Impact,sans-serif!important}
