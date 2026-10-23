@@ -70,8 +70,25 @@
     '<div class="hat-drawer-bottom"><p class="hat-drawer-total"><span>SUBTOTAL</span><strong id="hat-drawer-total"></strong></p>',
     '<p class="hat-drawer-note">Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.</p>',
     '<button type="button" class="hat-keep-shopping">SEGUIR COMPRANDO</button>',
-    '<a class="hat-cart-link" id="hat-cart-link" href="#">VER CARRITO</a>',
-    '<a class="hat-checkout-link" id="hat-checkout-link" href="#">IR A CHECKOUT</a>',
+    '<button type="button" class="hat-cart-link" id="hat-cart-link">VER CARRITO</button>',
+    '</div>',
+    '<div class="hat-cart-detail" id="hat-cart-detail" hidden>',
+    '<button type="button" class="hat-cart-back">← VOLVER AL MINI CARRITO</button>',
+    '<p class="hat-drawer-total"><span>SUBTOTAL</span><strong id="hat-cart-total"></strong></p>',
+    '<p class="hat-drawer-note">Preventa: entrega en 45 días. El saldo del apartado se paga antes del envío.</p>',
+    '<form id="hat-cart-form">',
+    '<h3>DATOS DE ENTREGA</h3>',
+    '<label>Nombre<input name="first_name" autocomplete="given-name" required></label>',
+    '<label>Apellidos<input name="last_name" autocomplete="family-name" required></label>',
+    '<label>Correo electrónico<input name="email" type="email" autocomplete="email" required></label>',
+    '<label>Calle y número<input name="address1" autocomplete="address-line1" required></label>',
+    '<label>Interior o referencia<input name="address2" autocomplete="address-line2"></label>',
+    '<div class="hat-cart-fields-row"><label>Ciudad<input name="city" autocomplete="address-level2" required></label><label>Estado<input name="province" autocomplete="address-level1" required></label></div>',
+    '<label>Código postal<input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>',
+    '<label class="hat-cart-consent"><input name="terms" type="checkbox" required><span>ACEPTO LOS <a href="/mirror/pages/terminos.html" target="_blank" rel="noopener">TÉRMINOS DE COMPRA</a> Y EL <a href="/mirror/pages/terminos.html#privacidad" target="_blank" rel="noopener">AVISO DE PRIVACIDAD</a></span></label>',
+    '<button type="submit" class="hat-cart-pay">CONTINUAR AL PAGO</button>',
+    '<p id="hat-cart-error" class="hat-quick-error" role="alert" hidden></p>',
+    '</form>',
     '</div></aside>'
   ].join('');
   document.body.append(drawer);
@@ -79,6 +96,7 @@
   let activeKey = null;
   let activeSlide = 0;
   let returnFocus = null;
+  let returnFocusByKeyboard = false;
   let startX = 0;
   const slide = byId('hat-quick-slide');
   const variant = byId('hat-quick-variant');
@@ -157,9 +175,10 @@
     product.liveSynced = true;
   }
 
-  async function openQuick(key, trigger) {
+  async function openQuick(key, trigger, byKeyboard) {
     activeKey = key;
     returnFocus = trigger;
+    returnFocusByKeyboard = byKeyboard;
     byId('hat-quick-quantity').value = '1';
     byId('hat-quick-error').hidden = true;
     renderProduct(key);
@@ -184,16 +203,23 @@
 
   function closeQuick() {
     quick.close();
-    document.body.classList.remove('hat-overlay-open');
-    if (returnFocus) returnFocus.focus();
   }
 
   section.querySelectorAll('.hat-open-product').forEach((button) => {
-    button.addEventListener('click', () => openQuick(button.dataset.hatColor, button));
+    button.addEventListener('click', (event) => openQuick(button.dataset.hatColor, button, event.detail === 0));
   });
   quick.querySelector('.hat-modal-close').addEventListener('click', closeQuick);
   quick.addEventListener('click', (event) => { if (event.target === quick) closeQuick(); });
-  quick.addEventListener('close', () => document.body.classList.remove('hat-overlay-open'));
+  function restoreProductFocus() {
+    if (!returnFocus || !returnFocus.isConnected) return;
+    if (returnFocusByKeyboard) returnFocus.focus({ preventScroll: true });
+    else requestAnimationFrame(() => returnFocus.blur());
+  }
+  quick.addEventListener('close', () => {
+    if (!drawer.hidden) return;
+    document.body.classList.remove('hat-overlay-open');
+    restoreProductFocus();
+  });
   byId('hat-slide-prev').addEventListener('click', () => showSlide(activeSlide - 1));
   byId('hat-slide-next').addEventListener('click', () => showSlide(activeSlide + 1));
   quick.addEventListener('keydown', (event) => {
@@ -270,6 +296,11 @@
     const items = normalizeCart(rawItems);
     const container = byId('hat-drawer-items');
     container.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement('p');
+      empty.textContent = 'TU CARRITO ESTÁ VACÍO. ELIGE UNA GORRA PARA EMPEZAR.';
+      container.append(empty);
+    }
     for (const item of items) {
       const row = document.createElement('div');
       row.className = 'hat-drawer-item';
@@ -294,35 +325,104 @@
       ? 'Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.'
       : 'Estos productos están en preventa. La entrega es en 45 días.';
     updateCartBadge(items.reduce((sum, item) => sum + item.quantity, 0));
-    if (isPreview) {
-      const ids = items.map((item) => item.id + ':' + item.quantity).join(',');
-      const permalink = 'https://elabuelopreferido.com/cart/' + ids;
-      byId('hat-cart-link').href = permalink + '?storefront=true';
-      byId('hat-checkout-link').href = permalink;
-    } else {
-      byId('hat-cart-link').href = shopRoot + 'cart';
-      byId('hat-checkout-link').href = shopRoot + 'checkout';
-    }
+    byId('hat-cart-total').textContent = byId('hat-drawer-total').textContent;
+    drawer.querySelector('.hat-cart-pay').disabled = !items.length;
   }
 
   function openDrawer(items) {
     renderDrawer(items);
+    drawer.classList.remove('is-cart-view');
+    byId('hat-cart-detail').hidden = true;
     drawer.hidden = false;
     document.body.classList.add('hat-overlay-open');
     drawer.querySelector('.hat-drawer-close').focus();
   }
   function closeDrawer() {
     drawer.hidden = true;
+    drawer.classList.remove('is-cart-view');
+    byId('hat-cart-detail').hidden = true;
     document.body.classList.remove('hat-overlay-open');
-    if (returnFocus) returnFocus.focus();
+    restoreProductFocus();
   }
   drawer.querySelector('.hat-drawer-close').addEventListener('click', closeDrawer);
   drawer.querySelector('.hat-drawer-backdrop').addEventListener('click', closeDrawer);
   drawer.querySelector('.hat-keep-shopping').addEventListener('click', closeDrawer);
+  byId('hat-cart-link').addEventListener('click', () => {
+    drawer.classList.add('is-cart-view');
+    byId('hat-cart-detail').hidden = false;
+    drawer.querySelector('.hat-cart-back').focus();
+  });
+  drawer.querySelector('.hat-cart-back').addEventListener('click', () => {
+    drawer.classList.remove('is-cart-view');
+    byId('hat-cart-detail').hidden = true;
+    byId('hat-cart-link').focus();
+  });
+  document.querySelectorAll('.cart-nav-link').forEach((link) => {
+    link.addEventListener('click', async (event) => {
+      event.preventDefault();
+      returnFocus = link;
+      returnFocusByKeyboard = event.detail === 0;
+      try {
+        const items = isPreview
+          ? readPreviewCart()
+          : await fetch(shopRoot + 'cart.js', { headers: { Accept: 'application/json' } }).then((response) => {
+              if (!response.ok) throw new Error('No se pudo cargar el carrito.');
+              return response.json();
+            }).then((cart) => cart.items);
+        openDrawer(items);
+        byId('hat-cart-link').click();
+      } catch (error) {
+        window.alert(error.message || 'No se pudo cargar el carrito.');
+      }
+    });
+  });
+  byId('hat-cart-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+    const button = form.querySelector('.hat-cart-pay');
+    const message = byId('hat-cart-error');
+    button.disabled = true;
+    button.textContent = 'PREPARANDO PAGO…';
+    message.hidden = true;
+    try {
+      const values = new FormData(form);
+      if (isPreview) {
+        const items = readPreviewCart();
+        if (!items.length) throw new Error('Tu carrito está vacío.');
+        const url = new URL('https://elabuelopreferido.com/cart/' + items.map((item) => item.id + ':' + item.quantity).join(','));
+        url.searchParams.set('checkout[email]', String(values.get('email') || ''));
+        for (const name of ['first_name', 'last_name', 'address1', 'address2', 'city', 'province', 'zip']) {
+          const value = String(values.get(name) || '').trim();
+          if (value) url.searchParams.set('checkout[shipping_address][' + name + ']', value);
+        }
+        url.searchParams.set('checkout[shipping_address][country]', 'MX');
+        url.searchParams.set('attributes[Condiciones de compra aceptadas]', 'Sí');
+        location.assign(url.href);
+      } else {
+        const attributes = { 'Condiciones de compra aceptadas': 'Sí' };
+        for (const name of ['first_name', 'last_name', 'email', 'address1', 'address2', 'city', 'province', 'zip']) {
+          attributes['Entrega: ' + name] = String(values.get(name) || '').trim();
+        }
+        const response = await fetch(shopRoot + 'cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ attributes }),
+        });
+        if (!response.ok) throw new Error('No se pudieron guardar los datos de entrega.');
+        location.assign(shopRoot + 'checkout');
+      }
+    } catch (error) {
+      message.textContent = error.message || 'No se pudo continuar al pago.';
+      message.hidden = false;
+      button.disabled = false;
+      button.textContent = 'CONTINUAR AL PAGO';
+    }
+  });
   drawer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeDrawer();
     if (event.key !== 'Tab') return;
-    const controls = [...drawer.querySelectorAll('.hat-drawer-panel button,.hat-drawer-panel a')];
+    const controls = [...drawer.querySelectorAll('.hat-drawer-panel button,.hat-drawer-panel a,.hat-drawer-panel input')].filter((control) => !control.disabled && control.getClientRects().length);
     const first = controls[0];
     const last = controls[controls.length - 1];
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
@@ -349,4 +449,8 @@
       addButton.textContent = 'AGREGAR AL CARRITO';
     }
   });
+  if (isPreview) {
+    const stored = readPreviewCart();
+    updateCartBadge(stored.reduce((sum, item) => sum + item.quantity, 0));
+  }
 })();

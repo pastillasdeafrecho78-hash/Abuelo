@@ -14,11 +14,13 @@
 #gorras .hat-stage::after{content:"";position:absolute;z-index:-1;left:18%;right:18%;bottom:12%;height:13%;background:#020a05a8;filter:blur(28px);border-radius:50%}
 #gorras .hat-stage .hat-feature-cap{position:absolute;width:60%;margin:0;padding:0;background:transparent;border:0;border-radius:0;color:inherit;display:block;z-index:1;transform:rotate(var(--angle));transition:transform .45s cubic-bezier(.2,.75,.25,1),filter .45s cubic-bezier(.2,.75,.25,1);will-change:transform}
 #gorras .hat-stage .hat-feature-cap::before{content:"";position:absolute;inset:20% 10%;z-index:-1;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 67%);filter:blur(24px);opacity:0;transform:scale(.75);transition:opacity .4s ease,transform .45s ease;pointer-events:none}
-#gorras .hat-stage .hat-feature-cap:hover,#gorras .hat-stage .hat-feature-cap:focus-within{z-index:8;transform:translateY(-10px) rotate(var(--angle)) scale(1.13)}
-#gorras .hat-stage .hat-feature-cap:hover::before,#gorras .hat-stage .hat-feature-cap:focus-within::before{opacity:1;transform:scale(1.28)}
+#gorras .hat-stage .hat-feature-cap:hover{z-index:8;transform:translateY(-10px) rotate(var(--angle)) scale(1.13)}
+#gorras .hat-stage .hat-feature-cap:hover::before{opacity:1;transform:scale(1.28)}
 #gorras .hat-stage .hat-feature-cap .hat-open-product{display:block;width:100%;border:0;background:transparent;padding:0;cursor:pointer}
+#gorras .hat-stage .hat-feature-cap .hat-open-product:focus{outline:none}
+#gorras .hat-stage .hat-feature-cap .hat-open-product:focus-visible{outline:2px solid #d5e7c7;outline-offset:5px}
 #gorras .hat-stage .hat-feature-cap img{width:100%;height:auto;max-height:none;aspect-ratio:4/3;object-fit:contain;filter:drop-shadow(0 24px 18px #07120c8a);transition:filter .45s ease}
-#gorras .hat-stage .hat-feature-cap:hover img,#gorras .hat-stage .hat-feature-cap:focus-within img{filter:drop-shadow(0 30px 26px #07120caf)}
+#gorras .hat-stage .hat-feature-cap:hover img{filter:drop-shadow(0 30px 26px #07120caf)}
 #gorras .hat-stage .hat-feature-cap figcaption{display:none}
 #gorras .hat-cap-green{--angle:-13deg;--glow:#72b985bb;left:3%;top:12%}
 #gorras .hat-cap-navy{--angle:12deg;--glow:#526fadcc;right:4%;top:2%}

@@ -54,10 +54,24 @@
 .hat-drawer-total{display:flex;justify-content:space-between;align-items:center;margin:0 0 9px;font-size:13px;font-weight:700;letter-spacing:.08em}
 .hat-drawer-total strong{font:700 30px/1 'Barlow Condensed',Impact,sans-serif;letter-spacing:0}
 .hat-drawer-note{font-size:11px;line-height:1.5;color:#66796a;margin:0 0 18px}
-.hat-keep-shopping,.hat-cart-link,.hat-checkout-link{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:9px;padding:9px 15px;font:700 14px/1 'Barlow Condensed',Impact,sans-serif;letter-spacing:.09em;text-decoration:none;border-radius:0}
+.hat-keep-shopping,.hat-cart-link{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:9px;padding:9px 15px;font:700 14px/1 'Barlow Condensed',Impact,sans-serif;letter-spacing:.09em;text-decoration:none;border-radius:0}
 .hat-keep-shopping{background:transparent;border:1px solid #1d3f2d;color:#1d3f2d}
 .hat-cart-link{background:#143e2b;border:1px solid #143e2b;color:#fff}
-.hat-checkout-link{background:#d9e6d3;border:1px solid #d9e6d3;color:#173b28}
-.hat-keep-shopping:hover,.hat-cart-link:hover,.hat-checkout-link:hover{filter:brightness(1.12)}
+.hat-keep-shopping:hover,.hat-cart-link:hover{filter:brightness(1.12)}
+.hat-cart-link{cursor:pointer}
+.hat-cart-detail[hidden]{display:none}
+.hat-drawer.is-cart-view .hat-drawer-bottom{display:none}
+.hat-drawer.is-cart-view .hat-drawer-items{flex:0 1 auto;max-height:28vh;min-height:110px}
+.hat-cart-detail{padding:18px 28px 27px;overflow:auto;flex:1;border-top:1px solid #cbd5c8}
+.hat-cart-back{padding:0;margin:0 0 22px;border:0;background:none;color:#244b34;font:700 12px/1.3 Arial,sans-serif;letter-spacing:.08em;cursor:pointer}
+.hat-cart-detail h3{font:700 26px/1 'Barlow Condensed',Impact,sans-serif;margin:0 0 16px}
+.hat-cart-detail form>label,.hat-cart-fields-row label{display:grid;gap:6px;margin:0 0 12px;font:700 12px/1.3 Arial,sans-serif}
+.hat-cart-detail form input:not([type="checkbox"]){width:100%;min-height:43px;padding:9px 11px;border:1px solid #aebdae;background:#fff;color:#15251b;font:400 14px/1.3 Arial,sans-serif}
+.hat-cart-fields-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.hat-cart-detail .hat-cart-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5;margin:15px 0}
+.hat-cart-consent input{width:20px;height:20px;flex:none;margin:0;accent-color:#143e2b}
+.hat-cart-consent a{text-decoration:underline}
+.hat-cart-pay{display:block;width:100%;min-height:49px;padding:10px;background:#143e2b;border:1px solid #143e2b;color:#fff;font:700 15px/1 'Barlow Condensed',Impact,sans-serif;letter-spacing:.08em;cursor:pointer}
+.hat-cart-pay:disabled{opacity:.6;cursor:wait}
 @media(max-width:760px){.hat-quick-view{width:calc(100vw - 20px);max-height:calc(100vh - 20px)}.hat-quick-grid{grid-template-columns:1fr}.hat-quick-gallery{padding:24px 18px 11px}.hat-quick-slide{height:min(44vw,260px)}.hat-quick-info{padding:21px 24px 28px}.hat-quick-info h2{font-size:44px}.hat-quick-note{margin-bottom:15px}.hat-modal-close{right:10px;top:10px}}
 @media(prefers-reduced-motion:reduce){.hat-quick-view[open],.hat-drawer-panel{animation:none}.hat-add-button,.hat-slide-arrow{transition:none}}

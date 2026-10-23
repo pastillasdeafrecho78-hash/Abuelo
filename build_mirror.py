@@ -49,8 +49,10 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
     html = re.sub(r'<iframe\b[^>]*>.*?</iframe\s*>', '', html, flags=re.I | re.S)
     html = html.replace('</head>', '<link rel="icon" href="/mirror/cdn/shop/t/8/assets/marca-original.png"><script>window.Shopify={routes:{root:"/mirror/"}};</script></head>')
     if source == SOURCE / 'index.html':
-        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/gorras-layout.css?v=6"><link rel="stylesheet" href="/mirror/gorras-quick-view.css?v=6"><link rel="stylesheet" href="/mirror/closing-sticker.css"></head>')
-        html = html.replace('<script src="/mirror/cdn/shop/t/8/assets/app.js', '<script src="/mirror/gorras-layout.js?v=6" defer></script><script src="/mirror/gorras-quick-view.js?v=6" defer></script><script src="/mirror/cdn/shop/t/8/assets/app.js')
+        html = html.replace('class="cart-nav-link" href="/mirror/cart.html" aria-label="Ver carrito y checkout"', 'class="cart-nav-link" href="#carrito" aria-label="Ver carrito"', 1)
+        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/gorras-layout.css?v=10"><link rel="stylesheet" href="/mirror/gorras-quick-view.css?v=10"><link rel="stylesheet" href="/mirror/closing-sticker.css"></head>')
+        html = html.replace('<script src="/mirror/cdn/shop/t/8/assets/app.js', '<script src="/mirror/gorras-layout.js?v=10" defer></script><script src="/mirror/gorras-quick-view.js?v=10" defer></script><script src="/mirror/cdn/shop/t/8/assets/app.js')
+        html = html.replace('function open(thanks){', "function shopping(){var hats=document.getElementById('gorras'), rect=hats&&hats.getBoundingClientRect();return location.hash==='#gorras'||!!(rect&&rect.top<innerHeight*.8&&rect.bottom>innerHeight*.2)||!!document.getElementById('hat-quick-view')?.open||!!(document.getElementById('hat-cart-drawer')&&!document.getElementById('hat-cart-drawer').hidden)}\n  function open(thanks){\n    if(!thanks&&shopping()) return;", 1)
         html = html.replace('<section class="closing">', '<section class="closing" id="cierre">', 1)
         html = re.sub(
             r'<div class="closing-brand">.*?</div><p class="eyebrow">EL ABUELO PREFERIDO</p>',
