@@ -91,7 +91,7 @@ for language in ("", "en", "pt", "fr", "it", "de", "nl", "ja", "zh", "ko"):
         return ''
     html = re.sub(r'<script\b[^>]*>.*?</script\s*>', keep_site_script, html, flags=re.I | re.S)
     html = re.sub(r'<iframe\b[^>]*>.*?</iframe\s*>', '', html, flags=re.I | re.S)
-    html = html.replace('</head>', f'<link rel="icon" href="/mirror/cdn/shop/t/8/assets/marca-original.png"><link rel="stylesheet" href="/mirror/locale-fonts.css?v=1"><script>window.Shopify={{routes:{{root:"{mirror_root}"}}}};</script></head>')
+    html = html.replace('</head>', f'<link rel="icon" href="/mirror/cdn/shop/t/8/assets/marca-original.png"><link rel="stylesheet" href="/mirror/locale-fonts.css?v=3"><script>window.Shopify={{routes:{{root:"{mirror_root}"}}}};</script></head>')
     if relative == Path('index.html'):
         html = html.replace('aria-label="Ver carrito y checkout"', 'aria-label="Ver carrito"', 1)
         html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/gorras-layout.css?v=10"><link rel="stylesheet" href="/mirror/gorras-quick-view.css?v=11"><link rel="stylesheet" href="/mirror/watch-presentation.css?v=1"><link rel="stylesheet" href="/mirror/closing-sticker.css"></head>')
