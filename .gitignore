@@ -1,0 +1,5 @@
+.playwright/
+.playwright-cli/
+.DS_Store
+*.pyc
+__pycache__/

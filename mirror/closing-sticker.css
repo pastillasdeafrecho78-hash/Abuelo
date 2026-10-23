@@ -1,0 +1,3 @@
+.closing .closing-brand-sticker{margin-bottom:38px}
+.closing .closing-brand-sticker img:first-child{width:clamp(280px,31vw,410px);max-width:90vw;max-height:none;height:auto;mix-blend-mode:normal}
+@media(max-width:850px){.closing .closing-brand-sticker img:first-child{width:min(330px,80vw)}}

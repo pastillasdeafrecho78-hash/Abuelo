@@ -1,0 +1,57 @@
+@font-face{font-family:'Lobster Two Local';src:url('/mirror/lobster-two-bold-italic.ttf') format('truetype');font-style:italic;font-weight:700;font-display:swap}
+#gorras.hats{background:#101612;color:#f8f8f2}
+#gorras .wrap{max-width:1540px;padding:40px 5% 70px}
+#gorras .hat-feature-heading{text-align:center;margin:0 auto 26px}
+#gorras .hat-feature-tagline{font:400 clamp(12px,1.2vw,16px)/1.3 Arial,sans-serif;letter-spacing:.28em;margin:0;color:#ccd7c8}
+#gorras .hat-feature-title{font:700 clamp(68px,7vw,100px)/.9 'Barlow Condensed',Impact,sans-serif;letter-spacing:.025em;margin:12px 0 0}
+#gorras .hat-feature-intro{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#gorras .hat-pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(22px,4vw,70px)}
+#gorras .hat-pair{min-width:0;text-align:center}
+#gorras .hat-pair-name{height:76px;display:flex;align-items:center;justify-content:center;font:700 clamp(30px,2.7vw,40px)/1.03 Georgia,serif;letter-spacing:-.035em;margin:0;color:#f5f4e9;text-transform:none}
+#gorras .hat-pair:first-child .hat-pair-name{font:italic 700 clamp(38px,3.5vw,52px)/1 'Lobster Two Local',Georgia,serif;letter-spacing:-.02em}
+#gorras .hat-pair:last-child .hat-pair-name{max-width:560px;margin-inline:auto;font:italic 700 clamp(38px,3.2vw,48px)/1 'Lobster Two Local',Georgia,serif;letter-spacing:-.02em}
+#gorras .hat-stage{position:relative;height:315px;isolation:isolate}
+#gorras .hat-stage::after{content:"";position:absolute;z-index:-1;left:18%;right:18%;bottom:12%;height:13%;background:#020a05a8;filter:blur(28px);border-radius:50%}
+#gorras .hat-stage .hat-feature-cap{position:absolute;width:60%;margin:0;padding:0;background:transparent;border:0;border-radius:0;color:inherit;display:block;z-index:1;transform:rotate(var(--angle));transition:transform .45s cubic-bezier(.2,.75,.25,1),filter .45s cubic-bezier(.2,.75,.25,1);will-change:transform}
+#gorras .hat-stage .hat-feature-cap::before{content:"";position:absolute;inset:20% 10%;z-index:-1;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 67%);filter:blur(24px);opacity:0;transform:scale(.75);transition:opacity .4s ease,transform .45s ease;pointer-events:none}
+#gorras .hat-stage .hat-feature-cap:hover,#gorras .hat-stage .hat-feature-cap:focus-within{z-index:8;transform:translateY(-10px) rotate(var(--angle)) scale(1.13)}
+#gorras .hat-stage .hat-feature-cap:hover::before,#gorras .hat-stage .hat-feature-cap:focus-within::before{opacity:1;transform:scale(1.28)}
+#gorras .hat-stage .hat-feature-cap .hat-open-product{display:block;width:100%;border:0;background:transparent;padding:0;cursor:pointer}
+#gorras .hat-stage .hat-feature-cap img{width:100%;height:auto;max-height:none;aspect-ratio:4/3;object-fit:contain;filter:drop-shadow(0 24px 18px #07120c8a);transition:filter .45s ease}
+#gorras .hat-stage .hat-feature-cap:hover img,#gorras .hat-stage .hat-feature-cap:focus-within img{filter:drop-shadow(0 30px 26px #07120caf)}
+#gorras .hat-stage .hat-feature-cap figcaption{display:none}
+#gorras .hat-cap-green{--angle:-13deg;--glow:#72b985bb;left:3%;top:12%}
+#gorras .hat-cap-navy{--angle:12deg;--glow:#526fadcc;right:4%;top:2%}
+#gorras .hat-cap-orange{--angle:-12deg;--glow:#f28b35c7;left:3%;top:2%}
+#gorras .hat-cap-white{--angle:13deg;--glow:#e2e7f1d9;right:4%;top:12%}
+#gorras .hat-pair-price{font:700 clamp(42px,4.4vw,64px)/1 'Barlow Condensed',Impact,sans-serif;margin:3px 0 0;color:#f6f7ed}
+#gorras .hat-pair-caption{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#aebfac;margin:10px 0 25px}
+#gorras .hat-pair-details{border-top:1px solid #58695c;border-bottom:1px solid #58695c;text-align:left}
+#gorras .hat-pair-details>summary{padding:14px 4px;font-size:12px;letter-spacing:.13em;color:#dce9d4}
+#gorras .hat-pair-details>summary::after{content:"+";margin-left:auto;font-size:20px;line-height:1}
+#gorras .hat-pair-details[open]>summary::after{content:"−"}
+#gorras .hat-pair-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:8px 4px 24px}
+#gorras .hat-pair-products[hidden]{display:none}
+#gorras .hat-color{margin:0;min-width:0;padding:14px 0 0;border-top:1px solid #607064;text-align:left}
+#gorras .hat-color-heading{display:block;padding:0;border:0}
+#gorras .hat-color-heading>span{display:block;font-size:10px;letter-spacing:.12em;color:#adc5ab}
+#gorras .hat-color-heading>span:last-child{margin:4px 0 0;color:#c3d79b}
+#gorras .hat-color-heading h3{font-size:clamp(27px,3vw,40px);line-height:1;margin:5px 0}
+#gorras .hat-price{display:block;margin:10px 0 0}
+#gorras .hat-price strong{display:block;font-size:clamp(25px,2.6vw,37px);line-height:1.1}
+#gorras .hat-price span{display:block;font-size:10px;line-height:1.45;color:#c4cdc1;margin-top:10px}
+#gorras .hat-color>.button.light{width:100%;min-height:45px;padding:10px 8px;margin-top:19px!important;font-size:11px}
+#gorras .hat-gallery-more{margin-top:15px}
+#gorras .hat-gallery-more summary{font-size:10px;font-weight:700;letter-spacing:.08em;cursor:pointer;color:#d5e3cc;list-style:none;border-bottom:1px solid #677669;padding:5px 0}
+#gorras .hat-gallery-more summary::after{content:"+";margin-left:auto;font-size:15px;line-height:1}
+#gorras .hat-gallery-more[open] summary::after{content:"−"}
+#gorras .hat-gallery-more .hat-slide-hint{font-size:10px;margin:13px 0 7px;max-width:none}
+#gorras .hat-color .hat-gallery{display:grid;grid-template-columns:1fr;overflow:visible;gap:10px;margin:0}
+#gorras .hat-gallery-more .hat-card{padding:4px;background:#26352b;color:white}
+#gorras .hat-gallery-more .hat-card img{height:120px;max-height:120px}
+#gorras .hat-gallery-more .hat-card figcaption{font-size:10px;padding:6px 4px}
+#gorras .hat-gallery-more .hat-card figcaption span{font-size:9px}
+@media(max-width:1050px){#gorras .hat-pairs{gap:24px}#gorras .hat-pair-name{font-size:30px}#gorras .hat-stage{height:310px}#gorras .hat-stage .hat-feature-cap{width:72%}}
+@media(max-width:760px){#gorras .wrap{padding:58px 6% 75px}#gorras .hat-feature-heading{margin-bottom:52px}#gorras .hat-pairs{grid-template-columns:1fr;gap:66px}#gorras .hat-pair-name{font-size:clamp(30px,8vw,42px);height:auto;min-height:76px}#gorras .hat-pair:first-child .hat-pair-name{font-size:clamp(38px,10vw,52px)}#gorras .hat-stage{height:clamp(270px,73vw,420px)}#gorras .hat-stage .hat-feature-cap{width:67%}#gorras .hat-pair-price{font-size:54px}#gorras .hat-color-heading h3{font-size:clamp(30px,6vw,39px)}#gorras .hat-price strong{font-size:30px}}
+@media(max-width:430px){#gorras .hat-stage{height:278px}#gorras .hat-stage .hat-feature-cap{width:74%}#gorras .hat-pair-products{gap:12px}#gorras .hat-color-heading h3{font-size:28px}#gorras .hat-price strong{font-size:25px}#gorras .hat-price span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){#gorras .hat-stage .hat-feature-cap,#gorras .hat-stage .hat-feature-cap::before,#gorras .hat-stage .hat-feature-cap img{transition:none}}
