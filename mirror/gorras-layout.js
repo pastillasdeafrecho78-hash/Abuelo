@@ -11,6 +11,9 @@
   const originalIntro = originalHeading?.nextElementSibling;
   const lettering = wrap.querySelector(':scope > .hat-quote');
   if (!originalHeading || !originalIntro) return;
+  const locale = document.documentElement.lang.split('-')[0];
+  const translatedTagline = originalHeading.innerText.replace(/\s+/g, ' ').trim();
+  const translatedTitle = document.querySelector('header a[href$="#gorras"]')?.textContent.trim();
 
   eyebrow.hidden = true;
   lettering.hidden = true;
@@ -18,13 +21,13 @@
   const heading = document.createElement('div');
   heading.className = 'hat-feature-heading';
   originalHeading.before(heading);
-  originalHeading.textContent = 'EL ESTILO SE LLEVA, LA ACTITUD TAMBIÉN';
+  originalHeading.textContent = locale === 'es' ? 'EL ESTILO SE LLEVA, LA ACTITUD TAMBIÉN' : translatedTagline;
   originalHeading.className = 'hat-feature-tagline';
   heading.append(originalHeading);
 
   const title = document.createElement('h2');
   title.className = 'hat-feature-title';
-  title.textContent = 'GORRAS';
+  title.textContent = locale === 'es' ? 'GORRAS' : (translatedTitle || 'CAPS');
   heading.append(title);
   originalIntro.classList.add('hat-feature-intro');
   heading.append(originalIntro);
@@ -70,7 +73,7 @@
       photo.classList.add('hat-feature-cap', `hat-cap-${group.keys[index]}`);
       const openButton = photo.querySelector('.hat-zoom');
       openButton.classList.replace('hat-zoom', 'hat-open-product');
-      openButton.setAttribute('aria-label', `Ver gorra ${color.querySelector('.hat-color-heading h3').textContent.toLowerCase()} y opciones de compra`);
+      if (locale === 'es') openButton.setAttribute('aria-label', `Ver gorra ${color.querySelector('.hat-color-heading h3').textContent.toLowerCase()} y opciones de compra`);
       openButton.dataset.hatColor = group.keys[index];
       stage.append(photo);
       productGrid.append(color);

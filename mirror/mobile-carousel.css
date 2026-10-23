@@ -1,0 +1,7 @@
+@media(max-width:760px){
+  .photo-carousel .carousel-controls button,
+  #relojes .watch-carousel .watch-arrow,
+  .hat-quick-view .hat-slide-arrow,
+  .hat-quick-view .hat-slide-dots{display:none!important}
+  .hat-quick-view .hat-quick-controls{min-height:24px}
+}

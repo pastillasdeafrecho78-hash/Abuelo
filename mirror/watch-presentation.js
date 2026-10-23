@@ -8,6 +8,17 @@
   const next = carousel.querySelector('.watch-next');
   const toggle = carousel.querySelector('.watch-toggle');
   if (slides.length < 2 || !previous || !next || !toggle) return;
+  const locale = document.documentElement.lang.split('-')[0];
+  const controls = {
+    es: ['PAUSAR', 'REPRODUCIR'], en: ['PAUSE', 'PLAY'], pt: ['PAUSAR', 'REPRODUZIR'],
+    fr: ['PAUSE', 'REPRENDRE'], it: ['PAUSA', 'RIPRODUCI'], de: ['PAUSE', 'ABSPIELEN'],
+    nl: ['PAUZEREN', 'AFSPELEN'], ja: ['一時停止', '再生'], zh: ['暂停', '播放'], ko: ['일시정지', '재생'],
+  }[locale] || ['PAUSAR', 'REPRODUCIR'];
+  const t = window.HAT_T || ((key) => key);
+  previous.setAttribute('aria-label', t('previous'));
+  next.setAttribute('aria-label', t('next'));
+  toggle.textContent = controls[0];
+  toggle.setAttribute('aria-label', controls[0]);
 
   const desktop = matchMedia('(min-width: 851px)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,8 +64,8 @@
   next.addEventListener('click', () => move(1));
   toggle.addEventListener('click', () => {
     manuallyPaused = !manuallyPaused;
-    toggle.textContent = manuallyPaused ? 'REPRODUCIR' : 'PAUSAR';
-    toggle.setAttribute('aria-label', manuallyPaused ? 'Reanudar presentación' : 'Pausar presentación');
+    toggle.textContent = controls[manuallyPaused ? 1 : 0];
+    toggle.setAttribute('aria-label', toggle.textContent);
     schedule();
   });
 

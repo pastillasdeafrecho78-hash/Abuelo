@@ -1,0 +1,7 @@
+@font-face{font-family:'Noto Sans JP Local';src:url('/mirror/fonts/noto-jp.woff2') format('woff2');font-style:normal;font-weight:400 900;font-display:swap}
+@font-face{font-family:'Noto Sans KR Local';src:url('/mirror/fonts/noto-kr.woff2') format('woff2');font-style:normal;font-weight:400 900;font-display:swap}
+@font-face{font-family:'Noto Sans SC Local';src:url('/mirror/fonts/noto-sc.woff2') format('woff2');font-style:normal;font-weight:400 900;font-display:swap}
+.lang-select{font-family:Arial,'Noto Sans JP Local','Noto Sans SC Local','Noto Sans KR Local',sans-serif}
+html[lang^="ja"] body,html[lang^="ja"] :is(h1,h2,h3,button,input,select,textarea){font-family:'Noto Sans JP Local',Arial,sans-serif}
+html[lang^="zh"] body,html[lang^="zh"] :is(h1,h2,h3,button,input,select,textarea){font-family:'Noto Sans SC Local',Arial,sans-serif}
+html[lang^="ko"] body,html[lang^="ko"] :is(h1,h2,h3,button,input,select,textarea){font-family:'Noto Sans KR Local',Arial,sans-serif}

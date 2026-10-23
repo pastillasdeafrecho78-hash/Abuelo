@@ -14,13 +14,11 @@
   if (!selectors.length) return;
 
   function destination(language) {
-    if (language === 'es') return location.href;
-    const prefix = languages[language];
-    if (!prefix) return null;
-
-    const page = location.pathname.replace(/^\/mirror\/?/, '').replace(/\.html$/, '');
-    const path = page && page !== 'index' ? '/' + page : '';
-    const url = new URL('https://elabuelopreferido.com/' + prefix + path);
+    const prefix = language === 'es' ? '' : languages[language];
+    if (prefix === undefined) return null;
+    const page = location.pathname.replace(/^\/mirror\/?/, '').replace(/^(en|pt|fr|it|de|nl|ja|zh|ko)\//, '') || 'index.html';
+    const url = new URL('/mirror/' + (prefix ? prefix + '/' : '') + page, location.origin);
+    url.search = location.search;
     url.hash = location.hash;
     return url.href;
   }

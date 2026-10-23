@@ -1,6 +1,7 @@
 (() => {
   const section = document.querySelector('#gorras');
   if (!section || !section.querySelector('.hat-open-product')) return;
+  const t = window.HAT_T || ((key) => key);
 
   // Los IDs y las condiciones de preventa vienen de las páginas originales de producto.
   // La segunda foto de cada color está en secondaryImage para poder sustituirla fácilmente.
@@ -10,6 +11,12 @@
     orange: { handle: 'gorra-naranja', title: 'Gorra naranja', total: 79900, reservePrice: 20000, balance: 59900, reserveId: '67732746305699', fullId: '67732746338467', secondaryImage: '/mirror/gorra-naranja-segunda.png' },
     white: { handle: 'gorra-blanca', title: 'Gorra blanca', total: 79900, reservePrice: 20000, balance: 59900, reserveId: '67732763148451', fullId: '67732763181219', secondaryImage: '/mirror/gorra-blanca-segunda.png' },
   };
+  const colorLabels = [...section.querySelectorAll('.hat-color-heading h3')];
+  Object.values(products).forEach((product, index) => {
+    if (colorLabels[index]) product.title = t('cap') + ' ' + colorLabels[index].textContent.toLocaleLowerCase(document.documentElement.lang);
+  });
+  const presaleLabel = section.querySelector('.hat-color-heading span:last-child')?.textContent.trim() || 'PREVENTA';
+  const shippingText = section.querySelector('.hat-color .hat-price span')?.innerHTML || '';
   const isPreview = location.hostname === '127.0.0.1' || location.hostname === 'localhost' || location.pathname.startsWith('/mirror/');
   const shopRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
   const money = (cents) => '$' + (cents / 100).toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' MXN';
@@ -17,8 +24,8 @@
   const primaryImage = (key) => section.querySelector('.hat-cap-' + key + ' img').getAttribute('src');
   const catalogByVariant = (id) => {
     for (const [key, product] of Object.entries(products)) {
-      if (id === product.reserveId) return { key, product, price: product.reservePrice, payment: 'Apartado de preventa' };
-      if (id === product.fullId) return { key, product, price: product.total, payment: 'Pago completo' };
+      if (id === product.reserveId) return { key, product, price: product.reservePrice, payment: t('reserve') };
+      if (id === product.fullId) return { key, product, price: product.total, payment: t('full') };
     }
     return null;
   };
@@ -28,31 +35,31 @@
   quick.id = 'hat-quick-view';
   quick.setAttribute('aria-labelledby', 'hat-quick-title');
   quick.innerHTML = [
-    '<button class="hat-modal-close" type="button" aria-label="Cerrar vista de gorra">×</button>',
+    `<button class="hat-modal-close" type="button" aria-label="${t('close')}">×</button>`,
     '<div class="hat-quick-grid">',
     '<div class="hat-quick-gallery">',
     '<div class="hat-quick-slide" id="hat-quick-slide" aria-live="polite"></div>',
     '<div class="hat-quick-controls">',
-    '<button type="button" class="hat-slide-arrow" id="hat-slide-prev" aria-label="Imagen anterior">‹</button>',
+    `<button type="button" class="hat-slide-arrow" id="hat-slide-prev" aria-label="${t('previous')}">‹</button>`,
     '<span id="hat-slide-count">1 / 2</span>',
-    '<button type="button" class="hat-slide-arrow" id="hat-slide-next" aria-label="Imagen siguiente">›</button>',
+    `<button type="button" class="hat-slide-arrow" id="hat-slide-next" aria-label="${t('next')}">›</button>`,
     '</div><div class="hat-slide-dots" id="hat-slide-dots"></div>',
     '</div>',
     '<div class="hat-quick-info">',
-    '<p class="hat-quick-eyebrow">EL ABUELO PREFERIDO · PREVENTA</p>',
+    `<p class="hat-quick-eyebrow">EL ABUELO PREFERIDO · ${presaleLabel}</p>`,
     '<h2 id="hat-quick-title"></h2>',
     '<p class="hat-quick-total" id="hat-quick-total"></p>',
-    '<p class="hat-quick-note">Entrega en 45 días · Envíos a todo México</p>',
+    `<p class="hat-quick-note">${t('delivery')}</p>`,
     '<form id="hat-quick-form">',
-    '<label for="hat-quick-variant">FORMA DE PAGO</label>',
+    `<label for="hat-quick-variant">${t('payment')}</label>`,
     '<select id="hat-quick-variant" name="id" required></select>',
     '<p class="hat-quick-payment" id="hat-quick-payment"></p>',
-    '<label for="hat-quick-quantity">CANTIDAD</label>',
+    `<label for="hat-quick-quantity">${t('quantity')}</label>`,
     '<input id="hat-quick-quantity" name="quantity" type="number" min="1" max="99" value="1" required>',
-    '<button type="submit" class="hat-add-button">AGREGAR AL CARRITO</button>',
+    `<button type="submit" class="hat-add-button">${t('add')}</button>`,
     '<p class="hat-quick-error" id="hat-quick-error" role="alert" hidden></p>',
     '</form>',
-    '<p class="hat-quick-shipping">ENVÍO A TODA LA REPÚBLICA MEXICANA<br>GRATIS EN COMPRAS DE GORRAS DESDE $1,400 MXN</p>',
+    `<p class="hat-quick-shipping">${shippingText}</p>`,
     '</div></div>'
   ].join('');
   document.body.append(quick);
@@ -62,15 +69,15 @@
   drawer.id = 'hat-cart-drawer';
   drawer.hidden = true;
   drawer.innerHTML = [
-    '<button type="button" class="hat-drawer-backdrop" aria-label="Cerrar mini carrito"></button>',
+    `<button type="button" class="hat-drawer-backdrop" aria-label="${t('closeCart')}"></button>`,
     '<aside class="hat-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="hat-drawer-title">',
-    '<div class="hat-drawer-head"><div><span>EL ABUELO PREFERIDO</span><h2 id="hat-drawer-title">TU CARRITO</h2></div>',
-    '<button type="button" class="hat-drawer-close" aria-label="Cerrar mini carrito">×</button></div>',
+    `<div class="hat-drawer-head"><div><span>EL ABUELO PREFERIDO</span><h2 id="hat-drawer-title">${t('cart')}</h2></div>`,
+    `<button type="button" class="hat-drawer-close" aria-label="${t('closeCart')}">×</button></div>`,
     '<div class="hat-drawer-items" id="hat-drawer-items"></div>',
-    '<div class="hat-drawer-bottom"><p class="hat-drawer-total"><span>SUBTOTAL</span><strong id="hat-drawer-total"></strong></p>',
-    '<p class="hat-drawer-note">Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.</p>',
-    '<button type="button" class="hat-keep-shopping">SEGUIR COMPRANDO</button>',
-    '<a class="hat-cart-link" id="hat-cart-link" href="https://elabuelopreferido.com/cart">VER CARRITO</a>',
+    `<div class="hat-drawer-bottom"><p class="hat-drawer-total"><span>${t('subtotal')}</span><strong id="hat-drawer-total"></strong></p>`,
+    `<p class="hat-drawer-note">${t('noteDeposit')}</p>`,
+    `<button type="button" class="hat-keep-shopping">${t('continue')}</button>`,
+    `<a class="hat-cart-link" id="hat-cart-link" href="https://elabuelopreferido.com/cart">${t('viewCart')}</a>`,
     '</div></aside>'
   ].join('');
   document.body.append(drawer);
@@ -93,7 +100,7 @@
     if (src) {
       const image = document.createElement('img');
       image.src = src;
-      image.alt = product.title + (activeSlide === 0 ? ', vista principal' : ', segunda vista');
+      image.alt = product.title + ', ' + (activeSlide === 0 ? t('main') : t('second'));
       slide.append(image);
     } else {
       const placeholder = document.createElement('div');
@@ -108,7 +115,7 @@
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'hat-slide-dot' + (i === activeSlide ? ' is-active' : '');
-      dot.setAttribute('aria-label', 'Ver imagen ' + (i + 1));
+      dot.setAttribute('aria-label', t('view') + ' ' + (i + 1));
       dot.setAttribute('aria-current', String(i === activeSlide));
       dot.addEventListener('click', () => showSlide(i));
       dots.append(dot);
@@ -118,23 +125,23 @@
   function updatePayment() {
     const product = products[activeKey];
     byId('hat-quick-payment').textContent = variant.value === product.reserveId
-      ? 'PAGAS ' + money(product.reservePrice) + ' HOY · SALDO ' + money(product.balance) + ' ANTES DE ENVIAR'
-      : 'PAGAS EL PRECIO TOTAL ' + money(product.total) + ' HOY';
+      ? `${t('pay')} ${money(product.reservePrice)} ${t('today')} · ${t('balance')} ${money(product.balance)} ${t('before')}`
+      : `${t('fullToday')} ${money(product.total)}`;
   }
 
   function renderProduct(key) {
     const product = products[key];
     byId('hat-quick-title').textContent = product.title;
-    byId('hat-quick-total').textContent = 'PRECIO TOTAL ' + money(product.total);
-    const reserve = new Option('APARTA CON ' + money(product.reservePrice), product.reserveId);
-    const full = new Option('PAGA COMPLETA ' + money(product.total), product.fullId);
+    byId('hat-quick-total').textContent = t('total') + ' ' + money(product.total);
+    const reserve = new Option(t('reserve') + ' ' + money(product.reservePrice), product.reserveId);
+    const full = new Option(t('full') + ' ' + money(product.total), product.fullId);
     reserve.disabled = product.reserveAvailable === false;
     full.disabled = product.fullAvailable === false;
     variant.replaceChildren(reserve, full);
     variant.value = reserve.disabled ? product.fullId : product.reserveId;
     updatePayment();
     addButton.disabled = reserve.disabled && full.disabled;
-    addButton.textContent = addButton.disabled ? 'AGOTADA' : 'AGREGAR AL CARRITO';
+    addButton.textContent = addButton.disabled ? t('soldOut') : t('add');
   }
 
   async function syncLiveProduct(key) {
@@ -287,7 +294,7 @@
     container.replaceChildren();
     if (!items.length) {
       const empty = document.createElement('p');
-      empty.textContent = 'TU CARRITO ESTÁ VACÍO. ELIGE UNA GORRA PARA EMPEZAR.';
+      empty.textContent = t('empty');
       container.append(empty);
     }
     for (const item of items) {
@@ -302,7 +309,7 @@
       const payment = document.createElement('span');
       payment.textContent = item.payment;
       const quantity = document.createElement('small');
-      quantity.textContent = 'CANTIDAD ' + item.quantity;
+      quantity.textContent = t('quantity') + ' ' + item.quantity;
       const price = document.createElement('b');
       price.textContent = money(item.price * item.quantity);
       copy.append(title, payment, quantity, price);
@@ -310,9 +317,8 @@
       container.append(row);
     }
     byId('hat-drawer-total').textContent = money(items.reduce((sum, item) => sum + item.price * item.quantity, 0));
-    drawer.querySelector('.hat-drawer-note').textContent = items.some((item) => catalogByVariant(item.id)?.payment === 'Apartado de preventa')
-      ? 'Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.'
-      : 'Estos productos están en preventa. La entrega es en 45 días.';
+    drawer.querySelector('.hat-drawer-note').textContent = items.some((item) => catalogByVariant(item.id)?.payment === t('reserve'))
+      ? t('noteDeposit') : t('notePresale');
     updateCartBadge(items.reduce((sum, item) => sum + item.quantity, 0));
     const destination = cartDestination(items);
     byId('hat-cart-link').href = destination;
@@ -349,7 +355,7 @@
     const quantity = Number(byId('hat-quick-quantity').value);
     if (!catalogByVariant(id) || !Number.isInteger(quantity) || quantity < 1 || quantity > 99) return;
     addButton.disabled = true;
-    addButton.textContent = 'AGREGANDO…';
+    addButton.textContent = t('adding');
     try {
       const items = await addToCart(id, quantity);
       quick.close();
@@ -360,7 +366,7 @@
       message.hidden = false;
     } finally {
       addButton.disabled = false;
-      addButton.textContent = 'AGREGAR AL CARRITO';
+      addButton.textContent = t('add');
     }
   });
   if (isPreview) {
