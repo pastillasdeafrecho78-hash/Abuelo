@@ -61,6 +61,8 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
             count=1,
             flags=re.S,
         )
+    if source == SOURCE / 'cart.html':
+        html = html.replace('href="/mirror/collections/gorras.html">VER GORRAS', 'href="/mirror/index.html#gorras">VER GORRAS', 1)
     target = MIRROR / source.relative_to(SOURCE)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(html)
