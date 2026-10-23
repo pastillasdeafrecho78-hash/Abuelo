@@ -1,0 +1,18 @@
+@font-face{font-family:'Lobster Two Local';src:url('/mirror/lobster-two-bold-italic.ttf') format('truetype');font-style:italic;font-weight:700;font-display:swap}
+.brand-page{background:#0b1a13;color:#f8f8f2}
+.brand-hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(350px,.92fr);min-height:690px;max-width:1600px;margin:auto}
+.brand-copy{display:flex;flex-direction:column;align-items:flex-start;padding:clamp(55px,7vw,105px) clamp(38px,6vw,100px) 70px}
+.brand-copy h1{font:700 clamp(70px,8vw,120px)/.82 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.025em;margin:0 0 clamp(30px,5vw,65px)}
+.brand-lead{max-width:750px;font:700 clamp(27px,3.5vw,51px)/1.04 'Barlow Condensed',Impact,sans-serif;margin:0 0 25px;text-wrap:balance}
+.brand-offer{font:italic 700 clamp(23px,2.45vw,35px)/1.15 'Lobster Two Local',Georgia,serif;color:#d5e5ca;margin:0 0 48px}
+.brand-action{width:min(100%,590px);margin-top:auto;padding-top:24px;border-top:1px solid #b7cab28c}
+.brand-action p{font:700 13px/1.5 Arial,sans-serif;letter-spacing:.05em;margin:0 0 20px}
+.brand-action a{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:60px;padding:13px 19px;background:#d7a747;color:#102018;font:700 16px/1.1 'Barlow Condensed',Impact,sans-serif;letter-spacing:.09em;transition:background .2s ease,transform .2s ease}
+.brand-action a:hover{background:#f0c364;transform:translateY(-2px)}
+.brand-action a:focus-visible{outline:2px solid #f3e2b5;outline-offset:4px}
+.brand-action svg{width:23px;height:23px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.brand-art{display:flex;align-items:flex-end;justify-content:center;overflow:hidden;background:#f7f8f3;min-height:580px}
+.brand-art img{width:min(100%,570px);height:auto;max-height:670px;object-fit:contain;object-position:bottom center}
+@media(max-width:900px){.brand-hero{grid-template-columns:1fr}.brand-copy{padding:64px 7% 56px}.brand-copy h1{font-size:clamp(70px,15vw,110px);margin-bottom:34px}.brand-action{margin-top:6px}.brand-art{min-height:0;max-height:500px}.brand-art img{width:min(72%,400px);max-height:500px}}
+@media(max-width:520px){.brand-copy{padding:46px 7% 48px}.brand-copy h1{font-size:72px}.brand-lead{font-size:34px}.brand-offer{font-size:27px;margin-bottom:32px}.brand-action p{font-size:12px}.brand-action a{min-height:55px}.brand-art{max-height:350px}.brand-art img{width:min(83%,320px);max-height:350px}}
+@media(prefers-reduced-motion:reduce){.brand-action a{transition:none}}

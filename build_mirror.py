@@ -27,7 +27,7 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
     html = html.replace("//elabuelopreferido.com/cdn/shop/", "/mirror/cdn/shop/")
     html = html.replace('href="/#', 'href="/mirror/index.html#')
     html = html.replace('href="/?', 'href="/mirror/index.html?')
-    html = html.replace('href="/cart"', 'href="/mirror/cart.html"')
+    html = html.replace('href="/cart"', 'href="https://elabuelopreferido.com/cart"')
     def local_page_link(match):
         if '.' in match.group(2):
             return f'href="https://elabuelopreferido.com/{match.group(1)}/{match.group(2)}{match.group(3) or ""}"'
@@ -49,9 +49,17 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
     html = re.sub(r'<iframe\b[^>]*>.*?</iframe\s*>', '', html, flags=re.I | re.S)
     html = html.replace('</head>', '<link rel="icon" href="/mirror/cdn/shop/t/8/assets/marca-original.png"><script>window.Shopify={routes:{root:"/mirror/"}};</script></head>')
     if source == SOURCE / 'index.html':
-        html = html.replace('class="cart-nav-link" href="/mirror/cart.html" aria-label="Ver carrito y checkout"', 'class="cart-nav-link" href="#carrito" aria-label="Ver carrito"', 1)
-        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/gorras-layout.css?v=10"><link rel="stylesheet" href="/mirror/gorras-quick-view.css?v=10"><link rel="stylesheet" href="/mirror/closing-sticker.css"></head>')
-        html = html.replace('<script src="/mirror/cdn/shop/t/8/assets/app.js', '<script src="/mirror/gorras-layout.js?v=10" defer></script><script src="/mirror/gorras-quick-view.js?v=10" defer></script><script src="/mirror/cdn/shop/t/8/assets/app.js')
+        html = html.replace('aria-label="Ver carrito y checkout"', 'aria-label="Ver carrito"', 1)
+        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/gorras-layout.css?v=10"><link rel="stylesheet" href="/mirror/gorras-quick-view.css?v=11"><link rel="stylesheet" href="/mirror/watch-presentation.css?v=1"><link rel="stylesheet" href="/mirror/closing-sticker.css"></head>')
+        html = html.replace('<script src="/mirror/cdn/shop/t/8/assets/app.js', '<script src="/mirror/gorras-layout.js?v=10" defer></script><script src="/mirror/gorras-quick-view.js?v=11" defer></script><script src="/mirror/cdn/shop/t/8/assets/app.js')
+        html = html.replace(
+            '<div class="carousel-controls"><span class="carousel-counter" aria-live="polite">1 / 9</span></div>',
+            '<button class="watch-prev watch-arrow" type="button" aria-label="Foto anterior de reloj"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>'
+            '<button class="watch-next watch-arrow" type="button" aria-label="Foto siguiente de reloj"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>'
+            '<div class="carousel-controls"><span class="carousel-counter" aria-live="off">1 / 9</span><button class="watch-toggle" type="button" aria-label="Pausar presentación">PAUSAR</button></div>',
+            1,
+        )
+        html = html.replace('</body>', '<script src="/mirror/watch-presentation.js?v=1" defer></script></body>')
         html = html.replace('function open(thanks){', "function shopping(){var hats=document.getElementById('gorras'), rect=hats&&hats.getBoundingClientRect();return location.hash==='#gorras'||!!(rect&&rect.top<innerHeight*.8&&rect.bottom>innerHeight*.2)||!!document.getElementById('hat-quick-view')?.open||!!(document.getElementById('hat-cart-drawer')&&!document.getElementById('hat-cart-drawer').hidden)}\n  function open(thanks){\n    if(!thanks&&shopping()) return;", 1)
         html = html.replace('<section class="closing">', '<section class="closing" id="cierre">', 1)
         html = re.sub(
@@ -63,6 +71,9 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
         )
     if source == SOURCE / 'cart.html':
         html = html.replace('href="/mirror/collections/gorras.html">VER GORRAS', 'href="/mirror/index.html#gorras">VER GORRAS', 1)
+    if source == SOURCE / 'pages/marcas.html':
+        html = re.sub(r'<main class="wrap legal">.*?</main>', (ROOT / 'brand-content.html').read_text().strip(), html, count=1, flags=re.S)
+        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/brand-page.css?v=1"></head>')
     target = MIRROR / source.relative_to(SOURCE)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(html)

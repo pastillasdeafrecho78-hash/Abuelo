@@ -70,25 +70,7 @@
     '<div class="hat-drawer-bottom"><p class="hat-drawer-total"><span>SUBTOTAL</span><strong id="hat-drawer-total"></strong></p>',
     '<p class="hat-drawer-note">Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.</p>',
     '<button type="button" class="hat-keep-shopping">SEGUIR COMPRANDO</button>',
-    '<button type="button" class="hat-cart-link" id="hat-cart-link">VER CARRITO</button>',
-    '</div>',
-    '<div class="hat-cart-detail" id="hat-cart-detail" hidden>',
-    '<button type="button" class="hat-cart-back">← VOLVER AL MINI CARRITO</button>',
-    '<p class="hat-drawer-total"><span>SUBTOTAL</span><strong id="hat-cart-total"></strong></p>',
-    '<p class="hat-drawer-note">Preventa: entrega en 45 días. El saldo del apartado se paga antes del envío.</p>',
-    '<form id="hat-cart-form">',
-    '<h3>DATOS DE ENTREGA</h3>',
-    '<label>Nombre<input name="first_name" autocomplete="given-name" required></label>',
-    '<label>Apellidos<input name="last_name" autocomplete="family-name" required></label>',
-    '<label>Correo electrónico<input name="email" type="email" autocomplete="email" required></label>',
-    '<label>Calle y número<input name="address1" autocomplete="address-line1" required></label>',
-    '<label>Interior o referencia<input name="address2" autocomplete="address-line2"></label>',
-    '<div class="hat-cart-fields-row"><label>Ciudad<input name="city" autocomplete="address-level2" required></label><label>Estado<input name="province" autocomplete="address-level1" required></label></div>',
-    '<label>Código postal<input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>',
-    '<label class="hat-cart-consent"><input name="terms" type="checkbox" required><span>ACEPTO LOS <a href="/mirror/pages/terminos.html" target="_blank" rel="noopener">TÉRMINOS DE COMPRA</a> Y EL <a href="/mirror/pages/terminos.html#privacidad" target="_blank" rel="noopener">AVISO DE PRIVACIDAD</a></span></label>',
-    '<button type="submit" class="hat-cart-pay">CONTINUAR AL PAGO</button>',
-    '<p id="hat-cart-error" class="hat-quick-error" role="alert" hidden></p>',
-    '</form>',
+    '<a class="hat-cart-link" id="hat-cart-link" href="https://elabuelopreferido.com/cart">VER CARRITO</a>',
     '</div></aside>'
   ].join('');
   document.body.append(drawer);
@@ -292,6 +274,13 @@
     badge.textContent = String(count);
   }
 
+  function cartDestination(items) {
+    if (!isPreview) return shopRoot + 'cart';
+    if (!items.length) return 'https://elabuelopreferido.com/cart';
+    const variants = items.map((item) => String(item.id) + ':' + item.quantity).join(',');
+    return 'https://elabuelopreferido.com/cart/' + variants + '?storefront=true';
+  }
+
   function renderDrawer(rawItems) {
     const items = normalizeCart(rawItems);
     const container = byId('hat-drawer-items');
@@ -325,100 +314,25 @@
       ? 'Los apartados son de preventa. El saldo se paga antes de enviar y la entrega es en 45 días.'
       : 'Estos productos están en preventa. La entrega es en 45 días.';
     updateCartBadge(items.reduce((sum, item) => sum + item.quantity, 0));
-    byId('hat-cart-total').textContent = byId('hat-drawer-total').textContent;
-    drawer.querySelector('.hat-cart-pay').disabled = !items.length;
+    const destination = cartDestination(items);
+    byId('hat-cart-link').href = destination;
+    document.querySelectorAll('.cart-nav-link').forEach((link) => { link.href = destination; });
   }
 
   function openDrawer(items) {
     renderDrawer(items);
-    drawer.classList.remove('is-cart-view');
-    byId('hat-cart-detail').hidden = true;
     drawer.hidden = false;
     document.body.classList.add('hat-overlay-open');
     drawer.querySelector('.hat-drawer-close').focus();
   }
   function closeDrawer() {
     drawer.hidden = true;
-    drawer.classList.remove('is-cart-view');
-    byId('hat-cart-detail').hidden = true;
     document.body.classList.remove('hat-overlay-open');
     restoreProductFocus();
   }
   drawer.querySelector('.hat-drawer-close').addEventListener('click', closeDrawer);
   drawer.querySelector('.hat-drawer-backdrop').addEventListener('click', closeDrawer);
   drawer.querySelector('.hat-keep-shopping').addEventListener('click', closeDrawer);
-  byId('hat-cart-link').addEventListener('click', () => {
-    drawer.classList.add('is-cart-view');
-    byId('hat-cart-detail').hidden = false;
-    drawer.querySelector('.hat-cart-back').focus();
-  });
-  drawer.querySelector('.hat-cart-back').addEventListener('click', () => {
-    drawer.classList.remove('is-cart-view');
-    byId('hat-cart-detail').hidden = true;
-    byId('hat-cart-link').focus();
-  });
-  document.querySelectorAll('.cart-nav-link').forEach((link) => {
-    link.addEventListener('click', async (event) => {
-      event.preventDefault();
-      returnFocus = link;
-      returnFocusByKeyboard = event.detail === 0;
-      try {
-        const items = isPreview
-          ? readPreviewCart()
-          : await fetch(shopRoot + 'cart.js', { headers: { Accept: 'application/json' } }).then((response) => {
-              if (!response.ok) throw new Error('No se pudo cargar el carrito.');
-              return response.json();
-            }).then((cart) => cart.items);
-        openDrawer(items);
-        byId('hat-cart-link').click();
-      } catch (error) {
-        window.alert(error.message || 'No se pudo cargar el carrito.');
-      }
-    });
-  });
-  byId('hat-cart-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (!form.reportValidity()) return;
-    const button = form.querySelector('.hat-cart-pay');
-    const message = byId('hat-cart-error');
-    button.disabled = true;
-    button.textContent = 'PREPARANDO PAGO…';
-    message.hidden = true;
-    try {
-      const values = new FormData(form);
-      if (isPreview) {
-        const items = readPreviewCart();
-        if (!items.length) throw new Error('Tu carrito está vacío.');
-        const url = new URL('https://elabuelopreferido.com/cart/' + items.map((item) => item.id + ':' + item.quantity).join(','));
-        url.searchParams.set('checkout[email]', String(values.get('email') || ''));
-        for (const name of ['first_name', 'last_name', 'address1', 'address2', 'city', 'province', 'zip']) {
-          const value = String(values.get(name) || '').trim();
-          if (value) url.searchParams.set('checkout[shipping_address][' + name + ']', value);
-        }
-        url.searchParams.set('checkout[shipping_address][country]', 'MX');
-        url.searchParams.set('attributes[Condiciones de compra aceptadas]', 'Sí');
-        location.assign(url.href);
-      } else {
-        const attributes = { 'Condiciones de compra aceptadas': 'Sí' };
-        for (const name of ['first_name', 'last_name', 'email', 'address1', 'address2', 'city', 'province', 'zip']) {
-          attributes['Entrega: ' + name] = String(values.get(name) || '').trim();
-        }
-        const response = await fetch(shopRoot + 'cart/update.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ attributes }),
-        });
-        if (!response.ok) throw new Error('No se pudieron guardar los datos de entrega.');
-        location.assign(shopRoot + 'checkout');
-      }
-    } catch (error) {
-      message.textContent = error.message || 'No se pudo continuar al pago.';
-      message.hidden = false;
-      button.disabled = false;
-      button.textContent = 'CONTINUAR AL PAGO';
-    }
-  });
   drawer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeDrawer();
     if (event.key !== 'Tab') return;
@@ -452,5 +366,6 @@
   if (isPreview) {
     const stored = readPreviewCart();
     updateCartBadge(stored.reduce((sum, item) => sum + item.quantity, 0));
+    document.querySelectorAll('.cart-nav-link').forEach((link) => { link.href = cartDestination(stored); });
   }
 })();
