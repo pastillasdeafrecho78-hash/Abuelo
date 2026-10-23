@@ -48,6 +48,59 @@ def translated_brand_content(page_html):
   </section>
 </main>'''
 
+# Keep product/form identifiers intact: only translate rendered copy and metadata.
+CJK_SHOW_NAMES = {
+    'ja': ('深夜トークショー', 'ABUELOの深夜トークショー', '毒舌動画', 'カスタム毒舌動画', '動画1本'),
+    'zh': ('深夜脱口秀', 'ABUELO深夜脱口秀', '毒舌视频', '定制毒舌视频', '1条视频'),
+    'ko': ('심야 토크쇼', 'ABUELO 심야 토크쇼', '독설 영상', '맞춤형 독설 영상', '영상 1개'),
+}
+
+def translate_cjk_show_names(page_html, language):
+    late, late_full, mentada, mentada_full, one_video = CJK_SHOW_NAMES[language]
+    descriptors = {
+        'ja': ('パーソナライズ毒舌動画', '毒舌動画'),
+        'zh': ('定制毒舌视频', '毒舌视频'),
+        'ko': ('맞춤형 독설 영상', '독설 영상'),
+    }
+    summary_descriptor, option_descriptor = descriptors[language]
+    late_statement = {
+        'ja': 'EL ABUELO PREFERIDOの深夜トークショー',
+        'zh': 'EL ABUELO PREFERIDO深夜脱口秀',
+        'ko': 'EL ABUELO PREFERIDO 심야 토크쇼',
+    }[language]
+    substitutions = (
+        ('LATE NIGHT WITH EL ABUELO PREFERIDO', late_statement),
+        ('LATE NIGHT SHOW ABUELO', late_full),
+        ('LATE NIGHT SHOW', late),
+        (f'MENTADAS DE MADRE {summary_descriptor}', mentada_full),
+        (f'MENTADAS DE MADRE {option_descriptor}', mentada_full),
+        ('MENTADAS DE MADRE', mentada),
+        ('Mentada de madre · 1 video', f'{mentada_full} · {one_video}'),
+        ('Mentada de madre', mentada_full),
+        ('MENTADAS', mentada),
+        ('MENTADA', mentada),
+    )
+
+    def translate_text(match):
+        value = match.group(2)
+        for source, target in substitutions:
+            value = value.replace(source, target)
+        return match.group(1) + value
+
+    page_html = re.sub(
+        r'(<(?:a|summary|p|strong|option|span|h1|label|button|title)\b[^>]*>)([^<]+)',
+        translate_text, page_html, flags=re.I,
+    )
+    # Search/social descriptions are copy too; the plural form values are untouched.
+    metadata_phrases = {
+        'ja': ('パーソナルなMentada de madre動画', 'パーソナルな毒舌動画'),
+        'zh': ('专属定制 Mentada de madre 视频', '专属定制毒舌视频'),
+        'ko': ('맞춤 Mentada de madre 영상', '맞춤 독설 영상'),
+    }
+    source, target = metadata_phrases[language]
+    page_html = page_html.replace(source, target)
+    return page_html.replace('Mentada de madre', mentada_full)
+
 for language in ("", "en", "pt", "fr", "it", "de", "nl", "ja", "zh", "ko"):
   for original_page in pages:
     relative = original_page.relative_to(SOURCE)
@@ -59,6 +112,8 @@ for language in ("", "en", "pt", "fr", "it", "de", "nl", "ja", "zh", "ko"):
     site_prefix = f"/{language}" if language else ""
     mirror_root = f"/mirror/{language}/" if language else "/mirror/"
     html = source.read_text()
+    if language in CJK_SHOW_NAMES:
+        html = translate_cjk_show_names(html, language)
     html = html.replace("https://elabuelopreferido.com/cdn/shop/", "/mirror/cdn/shop/")
     html = html.replace("//elabuelopreferido.com/cdn/shop/", "/mirror/cdn/shop/")
     html = html.replace(f'href="{site_prefix}/#', f'href="{mirror_root}index.html#')
