@@ -28,6 +28,20 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
     html = html.replace('href="/#', 'href="/mirror/index.html#')
     html = html.replace('href="/?', 'href="/mirror/index.html?')
     html = html.replace('href="/cart"', 'href="https://elabuelopreferido.com/cart"')
+    html = html.replace('action="/localization"', 'action="https://elabuelopreferido.com/localization"')
+    html = html.replace('class="lang-select" name="language_code" onchange="this.form.submit()"', 'class="lang-select" name="language_code"')
+    for code, native, readable in (
+        ('en', 'ENGLISH', 'INGLÉS'),
+        ('pt-BR', 'PORTUGUÊS (BRASIL)', 'PORTUGUÉS'),
+        ('fr', 'FRANÇAIS', 'FRANCÉS'),
+        ('it', 'ITALIANO', 'ITALIANO'),
+        ('de', 'DEUTSCH', 'ALEMÁN'),
+        ('nl', 'NEDERLANDS', 'NEERLANDÉS'),
+        ('ja', '日本語', 'JAPONÉS'),
+        ('zh-CN', '简体中文', 'CHINO'),
+        ('ko', '한국어', 'COREANO'),
+    ):
+        html = html.replace(f'<option value="{code}" lang="{code}">{native}</option>', f'<option value="{code}" lang="es">{readable}</option>')
     def local_page_link(match):
         if '.' in match.group(2):
             return f'href="https://elabuelopreferido.com/{match.group(1)}/{match.group(2)}{match.group(3) or ""}"'
@@ -73,7 +87,8 @@ for source in [SOURCE / "index.html", SOURCE / "cart.html", *SOURCE.glob("pages/
         html = html.replace('href="/mirror/collections/gorras.html">VER GORRAS', 'href="/mirror/index.html#gorras">VER GORRAS', 1)
     if source == SOURCE / 'pages/marcas.html':
         html = re.sub(r'<main class="wrap legal">.*?</main>', (ROOT / 'brand-content.html').read_text().strip(), html, count=1, flags=re.S)
-        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/brand-page.css?v=1"></head>')
+        html = html.replace('</head>', '<link rel="stylesheet" href="/mirror/brand-page.css?v=2"></head>')
+    html = html.replace('</body>', '<script src="/mirror/language-switcher.js?v=1" defer></script></body>')
     target = MIRROR / source.relative_to(SOURCE)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(html)
